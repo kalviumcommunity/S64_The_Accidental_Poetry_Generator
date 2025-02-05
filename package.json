@@ -1,0 +1,27 @@
+{
+  "name": "s64_the_accidental_poetry_generator",
+  "version": "1.0.0",
+  "description": "**Project Title:**\r ***The Accidental Poetry Generator***",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kalviumcommunity/S64_The_Accidental_Poetry_Generator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kalviumcommunity/S64_The_Accidental_Poetry_Generator/issues"
+  },
+  "homepage": "https://github.com/kalviumcommunity/S64_The_Accidental_Poetry_Generator#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.7",
+    "nodemon": "^3.1.9"
+  }
+}
