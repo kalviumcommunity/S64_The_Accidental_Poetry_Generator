@@ -1,18 +1,18 @@
-// Import Express module
+require('dotenv').config();
 const express = require('express');
+const connectDB=require("./config/db");
 
-// Create an instance of Express
 const app = express();
+const PORT = process.env.PORT || 4000;
 
-// Define the /ping route
+connectDB();
+
+app.use(express.json());
+
 app.get('/ping', (req, res) => {
-  res.status(200).send('Pong');
+    res.json({ message: 'Pong!' });
 });
 
-// Set the port the app will listen on
-const PORT = process.env.PORT || 3000;
-
-// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
