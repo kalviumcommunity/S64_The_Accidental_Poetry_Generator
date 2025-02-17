@@ -1,0 +1,117 @@
+/* Joker Theme Root Variables */
+:root {
+  font-family: 'Creepster', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: #ffffff;
+  background: linear-gradient(to right, #1a1a1a 10%, #026e00 30%, #4b0082 50%, #8b0000 70%, #1a1a1a 90%);
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Joker-Themed Links */
+a {
+  font-weight: 500;
+  color: #00ff00; /* Joker Green */
+  text-decoration: inherit;
+  transition: 0.3s ease-in-out;
+}
+a:hover {
+  color: #ff0000; /* Joker Red */
+  text-shadow: 0 0 10px #ff0000, 0 0 20px #00ff00;
+}
+
+/* Centering the Page */
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Joker-Themed Heading */
+h1 {
+  font-size: 3.2em;
+  font-weight: bold;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 4px 4px 6px #00ff00, -4px -4px 6px #ff0000;
+  animation: glitch 0.8s infinite alternate;
+  margin-bottom: 20px;
+}
+
+/* Glitch Animation */
+@keyframes glitch {
+  0% { text-shadow: 3px 3px 5px rgba(255, 0, 0, 0.7), -3px -3px 5px rgba(0, 255, 0, 0.7); }
+  100% { text-shadow: -3px -3px 5px rgba(255, 0, 0, 0.7), 3px 3px 5px rgba(0, 255, 0, 0.7); }
+}
+
+/* Joker-Themed Buttons */
+button {
+  border-radius: 10px;
+  border: 2px solid #4b0082;
+  padding: 0.8em 1.5em;
+  font-size: 1.2em;
+  font-weight: bold;
+  font-family: inherit;
+  background: linear-gradient(to right, #026e00, #4b0082, #8b0000);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(75, 0, 130, 0.8);
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glitch Effect on Button */
+button:hover {
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.8), 0 0 25px rgba(0, 255, 0, 0.8);
+  transform: scale(1.1);
+}
+button:active {
+  transform: scale(0.9);
+  box-shadow: 0 0 30px rgba(75, 0, 130, 1), 0 0 40px rgba(255, 0, 0, 1);
+}
+
+/* White Text Box for Generated Poem */
+.joker-poem-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.6), 0 0 20px rgba(75, 0, 130, 0.6);
+  width: fit-content;
+  max-width: 80%;
+  text-align: center;
+  border: 3px solid rgba(255, 0, 0, 0.8);
+}
+
+/* Joker Poem Text */
+.joker-poem {
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.4;
+  color: #121212;
+  font-family: 'Creepster', 'Comic Sans MS', sans-serif;
+  text-shadow: 2px 2px 5px rgba(75, 0, 130, 0.7), -2px -2px 5px rgba(255, 0, 0, 0.7);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5em;
+  }
+  button {
+    font-size: 1em;
+  }
+  .joker-poem {
+    font-size: 1.5rem;
+  }
+}
