@@ -11,7 +11,7 @@ connectDB();
 
 app.use(express.json());
 app.use(cors());
-
+ 
 // Use Centralized Routes
 app.use('/api', routes);
 
