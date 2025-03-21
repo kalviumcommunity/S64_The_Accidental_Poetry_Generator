@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar"; // ✅ Imported Navbar
 
 function Poems({ poems }) {
   const [fetchedPoems, setFetchedPoems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
 
   useEffect(() => {
     const fetchPoems = async () => {
@@ -41,8 +41,6 @@ function Poems({ poems }) {
     }
   };
 
-  
-
   const filteredPoems = [...fetchedPoems, ...poems].filter((poem) =>
     (typeof poem === "string" ? poem : poem.text)
       .toLowerCase()
@@ -50,8 +48,8 @@ function Poems({ poems }) {
   );
 
   return (
-    
     <div style={styles.container}>
+      <Navbar /> {/* ✅ Navbar included */}
       <h1 style={styles.title}>📜 Poem Vault 🎭</h1>
 
       {/* Search Input */}
@@ -103,10 +101,7 @@ const styles = {
     backgroundColor: "#141414",
     color: "white",
     minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
+    overflow: "hidden",
   },
   title: {
     fontSize: "3rem",
@@ -122,6 +117,8 @@ const styles = {
     marginBottom: "20px",
     outline: "none",
     border: "1px solid #e50914",
+    backgroundColor: "black",
+    color: "white",
   },
   poemContainer: {
     maxWidth: "700px",
@@ -147,6 +144,7 @@ const styles = {
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     textShadow: "0px 0px 5px #e50914",
+    boxShadow: "0px 0px 15px rgba(255, 0, 0, 0.3)",
   },
   poemText: {
     fontSize: "1.4rem",
@@ -165,6 +163,7 @@ const styles = {
     color: "white",
     cursor: "pointer",
     fontSize: "1rem",
+    transition: "transform 0.2s",
   },
   deleteButton: {
     padding: "8px 12px",
@@ -174,6 +173,7 @@ const styles = {
     color: "white",
     cursor: "pointer",
     fontSize: "1rem",
+    transition: "transform 0.2s",
   },
 };
 

@@ -1,35 +1,91 @@
+/* Global Styles */
 body {
   background-color: #141414;
   color: #ffffff;
   font-family: 'Arial', sans-serif;
   text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
+/* App Container */
 .app-container {
   padding: 20px;
 }
 
+/* Navbar Styles */
 .navbar {
   display: flex;
   justify-content: center;
-  background-color: #111;
+  align-items: center;
+  gap: 25px;
+  background: rgba(20, 20, 20, 0.95);
   padding: 15px;
-  box-shadow: 0px 4px 10px rgba(255, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0px 4px 20px rgba(255, 0, 0, 0.5);
+  border-bottom: 2px solid #e50914;
 }
 
+/* Navbar Links */
 .nav-link {
   color: #e50914;
   text-decoration: none;
-  font-size: 1.5rem;
-  margin: 0 15px;
-  transition: text-shadow 0.3s ease;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-shadow: 0px 0px 10px #e50914, 0px 0px 20px #ff0a16;
+  transition: text-shadow 0.3s ease, transform 0.3s ease;
+  padding: 10px 15px;
+  border-radius: 5px;
 }
 
+/* Hover Effect */
 .nav-link:hover {
-  text-shadow: 0 0 10px #e50914;
+  text-shadow: 0px 0px 20px #ff0a16, 0px 0px 40px #e50914;
+  transform: scale(1.1);
 }
 
+/* Page Content Wrapper (Prevents Overlapping Navbar) */
+.page-content {
+  margin-top: 80px; /* Adjust based on navbar height */
+  padding: 20px;
+}
+
+/* Headings */
 h1 {
   text-shadow: 0px 0px 15px #e50914;
   font-weight: bold;
+  font-size: 2.5rem;
+  margin-top: 30px;
+}
+
+/* Paragraphs */
+p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #dddddd;
+  max-width: 800px;
+  margin: 10px auto;
+}
+
+/* Generate Button */
+.generate-btn {
+  background-color: #e50914;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0px 0px 10px #e50914;
+  transition: 0.3s ease-in-out;
+}
+
+.generate-btn:hover {
+  background-color: #ff0a16;
+  box-shadow: 0px 0px 20px #ff0a16;
+  transform: scale(1.05);
 }
