@@ -9,6 +9,7 @@ const PoemSchema = new mongoose.Schema(
       minlength: [5, "Poem must be at least 5 characters long"],
       maxlength: [1000, "Poem cannot exceed 1000 characters"],
     },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true } // Adds createdAt & updatedAt automatically
 );

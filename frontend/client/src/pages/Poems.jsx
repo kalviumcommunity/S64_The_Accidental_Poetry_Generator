@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar"; // ✅ Imported Navbar
+import Navbar from "../components/Navbar";
 
-function Poems({ poems }) {
+function Poems({ poems = [] }) {
   const [fetchedPoems, setFetchedPoems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,29 +11,43 @@ function Poems({ poems }) {
   useEffect(() => {
     const fetchPoems = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/poems");
+        const response = await fetch("http://localhost:4000/api/poems"); // ✅ No token required
         if (!response.ok) throw new Error("Failed to fetch poems");
 
         const data = await response.json();
+        console.log("📜 Poems fetched:", data);
         setFetchedPoems(data);
       } catch (err) {
-        setError(err.message);
+        console.error("❌ Error fetching poems:", err);
+        setError("Failed to fetch poems.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchPoems();
-    const interval = setInterval(fetchPoems, 10000); // Auto-refresh every 10 seconds
-    return () => clearInterval(interval); // Cleanup
+    const interval = setInterval(fetchPoems, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this poem?")) {
       try {
-        await fetch(`http://localhost:4000/api/poems/${id}`, {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("You must be logged in to delete a poem.");
+          return;
+        }
+
+        const response = await fetch(`http://localhost:4000/api/poems/${id}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (!response.ok) throw new Error("Failed to delete poem");
+
         setFetchedPoems(fetchedPoems.filter((poem) => poem._id !== id));
       } catch (error) {
         alert("Failed to delete the poem.");
@@ -43,16 +57,15 @@ function Poems({ poems }) {
 
   const filteredPoems = [...fetchedPoems, ...poems].filter((poem) =>
     (typeof poem === "string" ? poem : poem.text)
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchQuery.toLowerCase())
   );
 
   return (
     <div style={styles.container}>
-      <Navbar /> {/* ✅ Navbar included */}
+      <Navbar />
       <h1 style={styles.title}>📜 Poem Vault 🎭</h1>
 
-      {/* Search Input */}
       <input
         type="text"
         placeholder="Search poems..."
@@ -72,6 +85,11 @@ function Poems({ poems }) {
               <pre style={styles.poemText}>
                 {typeof poem === "string" ? poem : poem.text}
               </pre>
+
+              <p style={styles.createdBy}>
+                🖊️ Created by: {poem?.createdBy?.username || "Unknown"}
+              </p>
+
               <div style={styles.actionButtons}>
                 <Link to={`/edit-poem/${poem._id}`}>
                   <button style={styles.editButton}>✏️ Edit</button>
@@ -148,6 +166,12 @@ const styles = {
   },
   poemText: {
     fontSize: "1.4rem",
+  },
+  createdBy: {
+    fontSize: "1rem",
+    color: "#bbbbbb",
+    fontStyle: "italic",
+    marginTop: "5px",
   },
   actionButtons: {
     display: "flex",

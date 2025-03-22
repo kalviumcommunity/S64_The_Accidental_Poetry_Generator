@@ -32,7 +32,7 @@ const LoginSignup = () => {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Something went wrong. Please try again.");
+      if (!response.ok || !data.token) throw new Error(data.message || "Invalid response from server.");
 
       // Store token & update authentication state
       localStorage.setItem("token", data.token);
@@ -40,7 +40,8 @@ const LoginSignup = () => {
       alert("✅ Login successful!");
       navigate("/"); // Redirect to home page
     } catch (err) {
-      setError(err.message);
+      console.error("Login error:", err.message);
+      setError(err.message || "Something went wrong. Please try again.");
     }
   };
 

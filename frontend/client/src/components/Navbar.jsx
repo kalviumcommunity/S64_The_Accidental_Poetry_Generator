@@ -4,7 +4,7 @@ import AuthContext from "../context/AuthContext"; // Import authentication conte
 
 function Navbar() {
   const [hovered, setHovered] = useState(null);
-  const { isAuthenticated, logout } = useContext(AuthContext);
+  const { token, logout } = useContext(AuthContext); // Use token instead of isAuthenticated
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -36,7 +36,7 @@ function Navbar() {
         </Link>
       ))}
 
-      {isAuthenticated ? (
+      {token ? ( // ✅ Check if token exists instead of using isAuthenticated
         <button
           onClick={handleLogout}
           style={{ ...styles.link, ...styles.logout }}

@@ -8,13 +8,21 @@ function AddEntity({ setPoems }) {
     "A cosmic mess of words...",
     "The void speaks in gibberish...",
     "Write something absurd!",
-    "Click 'Generate' for a random disaster!"
+    "Click 'Generate' for a random disaster!",
   ];
 
   const generateRandomText = () => {
     const randomWords = [
-      "bananas", "existential", "moonlight", "quantum", "unicorn",
-      "chaos", "laptop", "whisper", "hollow", "marshmallow"
+      "bananas",
+      "existential",
+      "moonlight",
+      "quantum",
+      "unicorn",
+      "chaos",
+      "laptop",
+      "whisper",
+      "hollow",
+      "marshmallow",
     ];
     const generatedPoem = Array.from({ length: 5 }, () =>
       randomWords[Math.floor(Math.random() * randomWords.length)]
@@ -27,22 +35,28 @@ function AddEntity({ setPoems }) {
     if (!text.trim()) return;
 
     try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("User not authenticated");
+
       const response = await fetch("http://localhost:4000/api/poems", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Added Auth Header
+        },
         body: JSON.stringify({ text }),
       });
 
       if (!response.ok) throw new Error("Failed to add poem");
 
-      const newPoem = await response.json();
-      setPoems((prev) => [newPoem.poem, ...prev]); // Update poem list in parent
-      setMessage("✨ Poem added successfully! ✨");
+      const { poem } = await response.json();
+      setPoems((prev) => [poem, ...prev]); // ✅ Ensure correct update
 
+      setMessage("✨ Poem added successfully! ✨");
       setTimeout(() => setMessage(""), 2000); // Fade success message
       setText(""); // Clear input
     } catch (error) {
-      console.error("Error adding poem:", error);
+      console.error("❌ Error adding poem:", error);
       setMessage("❌ Error adding poem! Try again.");
       setTimeout(() => setMessage(""), 3000);
     }
