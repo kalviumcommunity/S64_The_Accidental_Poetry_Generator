@@ -5,11 +5,14 @@ import AddEntity from "./pages/AddEntity";
 import EditPoem from "./pages/EditPoem"; 
 import Navbar from "./components/Navbar"; // ✅ Imported Navbar Component
 import { useState } from "react";
+import LoginSignup from "./pages/LoginSignup";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   const [poems, setPoems] = useState([]);
 
   return (
+    <AuthProvider>
     <Router>
       <div style={styles.appContainer}>
         <Navbar /> {/* ✅ Navbar included globally */}
@@ -20,10 +23,12 @@ function App() {
             <Route path="/poems-vault" element={<Poems poems={poems} />} />
             <Route path="/add-entity" element={<AddEntity setPoems={setPoems} />} />
             <Route path="/edit-poem/:id" element={<EditPoem />} />
+            <Route path="/auth" element={<LoginSignup />} />
           </Routes>
         </div>
       </div>
     </Router>
+    </AuthProvider>
   );
 }
 
