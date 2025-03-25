@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user'); // Ensure this model is correct
-const authenticate = require('../middleware/authMiddleware'); // JWT Middleware
+const { authenticate, isAdmin } = require("../middleware/authMiddleware");// JWT Middleware
 require('dotenv').config();
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 /// Signup Route
 router.post('/signup', async (req, res) => {
   try {
-    const { username, email, password } = req.body; // 🔥 Fix: Use 'username' instead of 'name'
+    const { username, email, password } = req.body; // 
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });

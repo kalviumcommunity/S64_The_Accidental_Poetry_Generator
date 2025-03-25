@@ -1,7 +1,7 @@
 const express = require("express");
 const Joi = require("joi");
 const Poem = require("../models/poem");
-const authenticate = require("../middleware/authMiddleware"); // ✅ Import authentication middleware
+const { authenticate, isAdmin } = require("../middleware/authMiddleware"); // ✅ Import admin check
 
 const router = express.Router();
 
@@ -33,7 +33,7 @@ const validateId = (req, res, next) => {
   next();
 };
 
-// 📌 CREATE a New Poem (Authenticated Route)
+// 📌 CREATE a New Poem (Authenticated)
 router.post("/", authenticate, validatePoem, async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
@@ -80,14 +80,14 @@ router.get("/:id", validateId, async (req, res) => {
   }
 });
 
-// 📌 UPDATE - Update Poem by ID (Authenticated)
+// 📌 UPDATE - Update Poem by ID (User or Admin)
 router.put("/:id", authenticate, validateId, validatePoem, async (req, res) => {
   try {
     const poem = await Poem.findById(req.params.id);
     if (!poem) return res.status(404).json({ message: "Poem not found" });
 
-    // ✅ Check if the logged-in user is the owner of the poem
-    if (poem.createdBy.toString() !== req.user._id) {
+    // ✅ Admins can update any poem, users can update only their own
+    if (poem.createdBy.toString() !== req.user._id && req.user.role !== "admin") {
       return res.status(403).json({ message: "Unauthorized: You can only edit your own poems." });
     }
 
@@ -101,14 +101,14 @@ router.put("/:id", authenticate, validateId, validatePoem, async (req, res) => {
   }
 });
 
-// 📌 DELETE - Delete Poem by ID (Authenticated)
+// 📌 DELETE - Delete Poem by ID (User or Admin)
 router.delete("/:id", authenticate, validateId, async (req, res) => {
   try {
     const poem = await Poem.findById(req.params.id);
     if (!poem) return res.status(404).json({ message: "Poem not found" });
 
-    // ✅ Check if the logged-in user is the owner of the poem
-    if (poem.createdBy.toString() !== req.user._id) {
+    // ✅ Admins can delete any poem, users can only delete their own
+    if (poem.createdBy.toString() !== req.user._id && req.user.role !== "admin") {
       return res.status(403).json({ message: "Unauthorized: You can only delete your own poems." });
     }
 
@@ -117,6 +117,17 @@ router.delete("/:id", authenticate, validateId, async (req, res) => {
     res.status(200).json({ message: "Poem deleted successfully" });
   } catch (error) {
     console.error(`Error deleting poem with ID ${req.params.id}:`, error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+// 📌 DELETE ALL POEMS (Admin Only)
+router.delete("/", authenticate, isAdmin, async (req, res) => {
+  try {
+    await Poem.deleteMany({});
+    res.status(200).json({ message: "All poems deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting all poems:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });

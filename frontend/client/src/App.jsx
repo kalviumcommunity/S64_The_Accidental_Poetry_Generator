@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar"; // ✅ Imported Navbar Component
 import { useState } from "react";
 import LoginSignup from "./pages/LoginSignup";
 import { AuthProvider } from "./context/AuthContext";
+import Admin from "./pages/Admin"; // 
 
 function App() {
   const [poems, setPoems] = useState([]);
@@ -24,6 +25,7 @@ function App() {
             <Route path="/add-entity" element={<AddEntity setPoems={setPoems} />} />
             <Route path="/edit-poem/:id" element={<EditPoem />} />
             <Route path="/auth" element={<LoginSignup />} />
+            <Route path="/admin" element={<Admin />} /> 
           </Routes>
         </div>
       </div>

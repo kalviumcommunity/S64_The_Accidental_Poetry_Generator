@@ -1,80 +1,92 @@
-const express = require('express');
-const bcrypt = require('bcryptjs');
-const User = require('../models/user');
-const authMiddleware = require('../middleware/authMiddleware');
+const express = require("express");
+const bcrypt = require("bcryptjs");
+const User = require("../models/user");
+const { authenticate, isAdmin } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-// Create a new User (Signup)
-router.post('/', async (req, res) => {
+// 📌 CREATE New User (Signup)
+router.post("/signup", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
+    const { username, email, password, role } = req.body;
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      role: role || "user", // Default role is 'user'
+    });
 
     await newUser.save();
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Signup Error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
-// Get all Users (Admin Only)
-router.get('/', authMiddleware, async (req, res) => {
+// 📌 GET All Users (Admin Only) - EXCLUDES ADMINS
+router.get("/", authenticate, isAdmin, async (req, res) => {
   try {
-    const users = await User.find().select('-password'); // Exclude passwords
+    const users = await User.find({ role: { $ne: "admin" } }).select("-password"); // ✅ Exclude admins
     res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Fetch Users Error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
-// Get a single User by ID (Protected)
-router.get('/:id', authMiddleware, async (req, res) => {
+// 📌 GET a Single User by ID (Protected)
+router.get("/:id", authenticate, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select('-password');
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findById(req.params.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Fetch User Error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 
-// Update User by ID (Protected)
-router.put('/:id', authMiddleware, async (req, res) => {
+// 📌 UPDATE User by ID (Protected)
+router.put("/:id", authenticate, async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { username, email } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      { name, email },
+      { username, email },
       { new: true, runValidators: true }
-    ).select('-password');
+    ).select("-password");
 
-    if (!updatedUser) return res.status(404).json({ message: 'User not found' });
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.error("Update User Error:", error);
     res.status(400).json({ message: error.message });
   }
 });
 
-// Delete User by ID (Admin Only)
-router.delete('/:id', authMiddleware, async (req, res) => {
+// 📌 DELETE User by ID (Admin Only)
+router.delete("/:id", authenticate, isAdmin, async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) return res.status(404).json({ message: 'User not found' });
-    res.status(200).json({ message: 'User deleted successfully' });
+    if (!deletedUser) return res.status(404).json({ message: "User not found" });
+    res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Delete User Error:", error);
+    res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
 

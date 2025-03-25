@@ -1,15 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
-import AuthContext from "../context/AuthContext"; // Import authentication context
+import { useState, useContext, useEffect } from "react";
+import AuthContext from "../context/AuthContext";
 
 function Navbar() {
   const [hovered, setHovered] = useState(null);
-  const { token, logout } = useContext(AuthContext); // Use token instead of isAuthenticated
+  const { token, user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(user?.role || "user");
+
+  useEffect(() => {
+    console.log("🔹 Navbar: User updated:", user);
+    setUserRole(user?.role || "user"); // ✅ Update when user changes
+  }, [user]);
 
   const handleLogout = () => {
-    logout(); // Call logout function from AuthContext
-    navigate("/"); // Redirect to home after logout
+    logout();
+    navigate("/");
   };
 
   return (
@@ -17,34 +23,41 @@ function Navbar() {
       {["home", "poems", "add"].map((item, index) => (
         <Link
           key={index}
-          to={
-            item === "home"
-              ? "/"
-              : item === "poems"
-              ? "/poems-vault"
-              : "/add-entity"
-          }
+          to={item === "home" ? "/" : item === "poems" ? "/poems-vault" : "/add-entity"}
           style={{ ...styles.link, ...(hovered === item ? styles.linkHover : {}) }}
           onMouseEnter={() => setHovered(item)}
           onMouseLeave={() => setHovered(null)}
         >
-          {item === "home"
-            ? "🏠 Home"
-            : item === "poems"
-            ? "📜 Poems"
-            : "➕ Add Poem"}
+          {item === "home" ? "🏠 Home" : item === "poems" ? "📜 Poems" : "➕ Add Poem"}
         </Link>
       ))}
 
-      {token ? ( // ✅ Check if token exists instead of using isAuthenticated
-        <button
-          onClick={handleLogout}
-          style={{ ...styles.link, ...styles.logout }}
-          onMouseEnter={() => setHovered("logout")}
+      {userRole === "admin" && (
+        <Link
+          to="/admin"
+          style={{ ...styles.link, ...(hovered === "admin" ? styles.linkHover : {}) }}
+          onMouseEnter={() => setHovered("admin")}
           onMouseLeave={() => setHovered(null)}
         >
-          🚪 Logout
-        </button>
+          🔧 Admin Panel
+        </Link>
+      )}
+
+      {token ? (
+        <>
+          <span style={styles.userRole}>
+            {userRole === "admin" ? "👑 Admin" : "👤 User"}
+          </span>
+
+          <button
+            onClick={handleLogout}
+            style={{ ...styles.link, ...styles.logout }}
+            onMouseEnter={() => setHovered("logout")}
+            onMouseLeave={() => setHovered(null)}
+          >
+            🚪 Logout
+          </button>
+        </>
       ) : (
         <Link
           to="/auth"
@@ -98,6 +111,12 @@ const styles = {
     fontWeight: "bold",
     color: "#ff0a16",
     cursor: "pointer",
+  },
+  userRole: {
+    fontSize: "1.2rem",
+    fontWeight: "bold",
+    color: "#fff",
+    marginRight: "15px",
   },
 };
 
